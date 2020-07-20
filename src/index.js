@@ -1,1 +1,5 @@
-alert("hello")
+document.writeln("hello")
+
+
+import "./main.scss";
+
