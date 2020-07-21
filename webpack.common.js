@@ -1,6 +1,11 @@
 const path = require('path');
-const webpack = require('webpack')
-
+const webpack = require('webpack');
+const CopyPlugin = require('copy-webpack-plugin');
+const PATHS = {
+    src: path.join(__dirname, './src'),
+    dist: path.join(__dirname, './dist'),
+    assets: 'assets/'
+};
 
 module.exports = {
     entry: {
@@ -18,9 +23,11 @@ module.exports = {
         new webpack.ProvidePlugin({
             '$':          'jquery',
             '_':          'lodash',
-            'ReactDOM':   'react-dom',
-            'cssModule':  'react-css-modules',
-            'Promise':    'bluebird'
+        }),
+        new CopyPlugin({
+            patterns: [
+                {from: PATHS.src + '/images', to: `assets/images`}
+            ]
         })
     ],
 
@@ -43,8 +50,8 @@ module.exports = {
                 use: {
                     loader: 'file-loader',
                     options: {
-                        name: '[name].[hash].[ext]',
-                        outputPath: "images" 
+                        name: '[name].[ext]',
+                        outputPath: "assets/images" 
                     }
                 }
             },
@@ -64,7 +71,20 @@ module.exports = {
                 test: /\.tsx?$/,
                 use: 'ts-loader',
                 exclude: /node_modules/,
-            }
+            },
+
+            {
+                test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+                loader: 'file-loader',
+                options: {
+                    name: '[name].[ext]'
+                }
+            }, 
+
+            {
+                test: /\.pug$/,
+                loader: 'pug-loader'
+            },
         ]
     },
 };

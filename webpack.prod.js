@@ -6,14 +6,24 @@ const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const fs = require('fs');
+const PATHS = {
+  src: path.join(__dirname, './src'),
+  dist: path.join(__dirname, './dist'),
+  assets: 'assets/'
+};
+const PAGES_DIR = `${PATHS.src}/pages/`;
+const PAGES = fs.readdirSync(PAGES_DIR).filter(fileName => fileName.endsWith('.pug'));
+
 
 
 module.exports = merge(common, {
     mode: 'production',
     output: {
-        filename: '[name].[contentHash].bundle.js',
-        path: path.resolve(__dirname, 'dist')
+        filename: `${PATHS.assets}js/[name].[contentHash].bundle.js`,
+        path: PATHS.dist,
+        publicPath: '/'
     },
 
     optimization: {
@@ -25,7 +35,9 @@ module.exports = merge(common, {
 
     plugins: [
         new HtmlWebpackPlugin({
-            template: './src/template1.html',
+            filename: `${PATHS.assets}js/[name].bundle.js`,
+            path: PATHS.dist,
+            publicPath: '/',
             minify: {
                 removeAttributeQuotes: true,
                 collapseWhitespace: true,
@@ -34,10 +46,15 @@ module.exports = merge(common, {
         }),
 
         new CleanWebpackPlugin(),
-
+        
         new MiniCssExtractPlugin({
-            filename: '[name].[contentHash].css'
-        })
+            filename: `${PATHS.assets}css/[name].[contentHash].css`,
+        }),
+
+        ...PAGES.map(page => new HtmlWebpackPlugin({
+            template: `${PAGES_DIR}/${page}`,
+            filename: `./${page.replace(/\.pug/,'.html')}`
+        })),
     ],
 
     module: {
