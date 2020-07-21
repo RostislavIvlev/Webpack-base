@@ -5,7 +5,14 @@ const webpack = require('webpack')
 module.exports = {
     entry: {
         main: './src/index.js',
+        typescript: './src/index.ts'
     },
+
+    resolve: {
+        extensions: [ '.tsx', '.ts', '.js'],
+    },
+
+    devtool: 'source-map',
 
     plugins: [
         new webpack.ProvidePlugin({
@@ -51,7 +58,13 @@ module.exports = {
                         presets: ['@babel/preset-env']
                     }
                 }
+            },
+
+            {
+                test: /\.tsx?$/,
+                use: 'ts-loader',
+                exclude: /node_modules/,
             }
         ]
-    }
+    },
 };
