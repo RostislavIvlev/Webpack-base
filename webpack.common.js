@@ -1,17 +1,24 @@
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
+const webpack = require('webpack')
 
 
 module.exports = {
-    entry: './src/index.js',
-    output: {
-        filename: 'main.[contentHash].js',
-        path: path.resolve(__dirname, 'dist')
+    entry: {
+        main: './src/index.js',
     },
 
     plugins: [
         new HtmlWebpackPlugin({
             template: './src/template1.html'
+        }),
+
+        new webpack.ProvidePlugin({
+            '$':          'jquery',
+            '_':          'lodash',
+            'ReactDOM':   'react-dom',
+            'cssModule':  'react-css-modules',
+            'Promise':    'bluebird'
         })
     ],
 
@@ -45,6 +52,17 @@ module.exports = {
                     options: {
                         name: '[name].[hash].[ext]',
                         outputPath: "images" 
+                    }
+                }
+            },
+
+            {
+                test: /\.m?js$/,
+                exclude: /(node_modules|bower_components)/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['@babel/preset-env']
                     }
                 }
             }
