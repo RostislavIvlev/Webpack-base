@@ -1,4 +1,4 @@
-mixin button(mods, label)
+mixin button(label, mods)
   -
     if (typeof (options) === "undefined") {
         var options = {}
@@ -11,4 +11,4 @@ mixin button(mods, label)
         }
     }
 
-  button.btn(class= allMods)&attributes(attributes)= label
+  a.btn(class= allMods)&attributes(attributes)= label
